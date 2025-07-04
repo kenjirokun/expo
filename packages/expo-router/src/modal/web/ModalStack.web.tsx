@@ -14,7 +14,7 @@ import {
   NativeStackNavigationOptions,
   NativeStackView,
 } from '@react-navigation/native-stack';
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { ModalStackRouteDrawer } from './ModalStackRouteDrawer.web';
 import { TransparentModalStackRouteDrawer } from './TransparentModalStackRouteDrawer.web';
@@ -64,6 +64,10 @@ const ModalStackView = ({ state, navigation, descriptors, describe }: ModalStack
 
   const newStackState = { ...state, routes: filteredRoutes, index: nonModalIndex };
 
+  const dismiss = useCallback(() => {
+    navigation.goBack();
+  }, [navigation]);
+
   return (
     <div style={{ flex: 1, display: 'flex' }}>
       <NativeStackView
@@ -75,8 +79,7 @@ const ModalStackView = ({ state, navigation, descriptors, describe }: ModalStack
       {isWeb &&
         state.routes.map((route, i) => {
           const isModalType = isModalPresentation(descriptors[route.key].options);
-          const isActive = i === 0 || !isModalType;
-          if (isActive) return null;
+          if (!isModalType) return null;
 
           const isTransparentModal = isTransparentModalPresentation(descriptors[route.key].options);
           if (isTransparentModal) {
@@ -86,7 +89,7 @@ const ModalStackView = ({ state, navigation, descriptors, describe }: ModalStack
                 routeKey={route.key}
                 options={descriptors[route.key].options as ExtendedStackNavigationOptions}
                 renderScreen={descriptors[route.key].render}
-                onDismiss={() => navigation.goBack()}
+                onDismiss={dismiss}
               />
             );
           }
@@ -97,7 +100,7 @@ const ModalStackView = ({ state, navigation, descriptors, describe }: ModalStack
               routeKey={route.key}
               options={descriptors[route.key].options as ExtendedStackNavigationOptions}
               renderScreen={descriptors[route.key].render}
-              onDismiss={() => navigation.goBack()}
+              onDismiss={dismiss}
               themeColors={colors}
             />
           );

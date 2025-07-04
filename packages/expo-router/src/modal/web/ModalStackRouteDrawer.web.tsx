@@ -4,6 +4,7 @@ import { Drawer } from 'vaul';
 
 import modalStyles from './modalStyles';
 import { CSSWithVars } from './types';
+import { useIsDesktop } from './utils';
 import { ExtendedStackNavigationOptions } from '../../layouts/StackClient';
 
 function ModalStackRouteDrawer({
@@ -177,6 +178,7 @@ function ModalStackRouteDrawer({
       open={open}
       dismissible={options.gestureEnabled ?? true}
       onAnimationEnd={handleOpenChange}
+      shouldScaleBackground
       onOpenChange={setOpen}
       {...sheetProps}>
       <Drawer.Portal>
@@ -214,32 +216,3 @@ function ModalStackRouteDrawer({
 }
 
 export { ModalStackRouteDrawer };
-
-/**
- * SSR-safe viewport detection: initial render always returns `false` so that
- * server and client markup match. The actual media query evaluation happens
- * after mount.
- *
- * @internal
- */
-export function useIsDesktop(breakpoint: number = 768) {
-  const isWeb = process.env.EXPO_OS === 'web';
-
-  // Ensure server-side and initial client render agree (mobile first).
-  const [isDesktop, setIsDesktop] = React.useState<boolean>(false);
-
-  React.useEffect(() => {
-    if (!isWeb || typeof window === 'undefined') return;
-
-    const mql = window.matchMedia(`(min-width: ${breakpoint}px)`);
-    const listener = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
-
-    // Update immediately after mount
-    setIsDesktop(mql.matches);
-
-    mql.addEventListener('change', listener);
-    return () => mql.removeEventListener('change', listener);
-  }, [breakpoint, isWeb]);
-
-  return isDesktop;
-}

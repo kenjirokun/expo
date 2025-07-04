@@ -24,7 +24,7 @@ function TransparentModalStackRouteDrawer({
     <Drawer.Root
       defaultOpen
       key={`${routeKey}-transparent`}
-      dismissible={options.gestureEnabled ?? true}
+      dismissible={options.gestureEnabled ?? false}
       onAnimationEnd={handleOpenChange}>
       <Drawer.Portal>
         <Drawer.Content className={modalStyles.transparentDrawerContent}>

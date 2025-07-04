@@ -14,7 +14,7 @@ function TransparentModalStackRouteDrawer({ routeKey, options, renderScreen, onD
         if (!open)
             onDismiss();
     };
-    return (<vaul_1.Drawer.Root defaultOpen key={`${routeKey}-transparent`} dismissible={options.gestureEnabled ?? true} onAnimationEnd={handleOpenChange}>
+    return (<vaul_1.Drawer.Root defaultOpen key={`${routeKey}-transparent`} dismissible={options.gestureEnabled ?? false} onAnimationEnd={handleOpenChange}>
       <vaul_1.Drawer.Portal>
         <vaul_1.Drawer.Content className={modalStyles_1.default.transparentDrawerContent}>
           {/* Figure out how to add title and description to the modal for screen readers */}
