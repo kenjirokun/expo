@@ -9,6 +9,15 @@ export function isModalPresentation(
     presentation === 'modal' ||
     presentation === 'formSheet' ||
     presentation === 'fullScreenModal' ||
-    presentation === 'containedModal'
+    presentation === 'containedModal' ||
+    presentation === 'transparentModal' ||
+    presentation === 'containedTransparentModal'
   );
+}
+
+export function isTransparentModalPresentation(
+  options?: Partial<Pick<ExtendedStackNavigationOptions, 'presentation'>> | null
+) {
+  const presentation = options?.presentation;
+  return presentation === 'transparentModal' || presentation === 'containedTransparentModal';
 }

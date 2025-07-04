@@ -1,6 +1,6 @@
 import React from 'react';
 import { ExtendedStackNavigationOptions } from '../../layouts/StackClient';
-declare const ModalStackRouteDrawer: React.MemoExoticComponent<({ routeKey, options, renderScreen, onDismiss, themeColors, }: {
+declare function ModalStackRouteDrawer({ routeKey, options, renderScreen, onDismiss, themeColors, }: {
     routeKey: string;
     options: ExtendedStackNavigationOptions;
     renderScreen: () => React.ReactNode;
@@ -9,7 +9,7 @@ declare const ModalStackRouteDrawer: React.MemoExoticComponent<({ routeKey, opti
         card: string;
         background: string;
     };
-}) => React.JSX.Element>;
+}): React.JSX.Element;
 export { ModalStackRouteDrawer };
 /**
  * SSR-safe viewport detection: initial render always returns `false` so that

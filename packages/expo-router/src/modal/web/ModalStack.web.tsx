@@ -17,8 +17,9 @@ import {
 import React from 'react';
 
 import { ModalStackRouteDrawer } from './ModalStackRouteDrawer.web';
+import { TransparentModalStackRouteDrawer } from './TransparentModalStackRouteDrawer.web';
 import { ModalStackNavigatorProps, ModalStackViewProps } from './types';
-import { isModalPresentation } from './utils';
+import { isModalPresentation, isTransparentModalPresentation } from './utils';
 import { ExtendedStackNavigationOptions } from '../../layouts/StackClient';
 import { withLayoutContext } from '../../layouts/withLayoutContext';
 
@@ -74,8 +75,21 @@ const ModalStackView = ({ state, navigation, descriptors, describe }: ModalStack
       {isWeb &&
         state.routes.map((route, i) => {
           const isModalType = isModalPresentation(descriptors[route.key].options);
-          const isActive = i === state.index && isModalType;
-          if (!isActive) return null;
+          const isActive = i === 0 || !isModalType;
+          if (isActive) return null;
+
+          const isTransparentModal = isTransparentModalPresentation(descriptors[route.key].options);
+          if (isTransparentModal) {
+            return (
+              <TransparentModalStackRouteDrawer
+                key={route.key}
+                routeKey={route.key}
+                options={descriptors[route.key].options as ExtendedStackNavigationOptions}
+                renderScreen={descriptors[route.key].render}
+                onDismiss={() => navigation.goBack()}
+              />
+            );
+          }
 
           return (
             <ModalStackRouteDrawer

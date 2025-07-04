@@ -4,12 +4,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ModalStackRouteDrawer = void 0;
+exports.ModalStackRouteDrawer = ModalStackRouteDrawer;
 exports.useIsDesktop = useIsDesktop;
 const react_1 = __importDefault(require("react"));
 const vaul_1 = require("vaul");
 const modalStyles_1 = __importDefault(require("./modalStyles"));
-const ModalStackRouteDrawer = react_1.default.memo(({ routeKey, options, renderScreen, onDismiss, themeColors, }) => {
+function ModalStackRouteDrawer({ routeKey, options, renderScreen, onDismiss, themeColors, }) {
     const [open, setOpen] = react_1.default.useState(true);
     // Determine sheet vs. modal with an SSR-safe hook. The first render (during
     // hydration) always assumes mobile/sheet to match the server markup; an
@@ -137,28 +137,27 @@ const ModalStackRouteDrawer = react_1.default.memo(({ routeKey, options, renderS
         }
         : {};
     return (<vaul_1.Drawer.Root key={`${routeKey}-${isSheet ? 'sheet' : 'modal'}`} open={open} dismissible={options.gestureEnabled ?? true} onAnimationEnd={handleOpenChange} onOpenChange={setOpen} {...sheetProps}>
-        <vaul_1.Drawer.Portal>
-          <vaul_1.Drawer.Overlay className={modalStyles_1.default.overlay} style={options.webModalStyle?.overlayBackground
+      <vaul_1.Drawer.Portal>
+        <vaul_1.Drawer.Overlay className={modalStyles_1.default.overlay} style={options.webModalStyle?.overlayBackground
             ? {
                 '--expo-router-modal-overlay-background': options.webModalStyle.overlayBackground,
             }
             : undefined}/>
-          <vaul_1.Drawer.Content aria-describedby="modal-description" className={modalStyles_1.default.drawerContent} style={{
+        <vaul_1.Drawer.Content aria-describedby="modal-description" className={modalStyles_1.default.drawerContent} style={{
             pointerEvents: 'none',
             ...(fitToContents ? { height: 'auto' } : null),
         }}>
-            <div className={modalStyles_1.default.modal} data-presentation={isSheet ? 'formSheet' : 'modal'} style={modalStyleVars}>
-              {/* Figure out how to add title and description to the modal for screen readers */}
-              <vaul_1.Drawer.Title about="" aria-describedby="" className={modalStyles_1.default.srOnly}/>
-              <vaul_1.Drawer.Description about="" className={modalStyles_1.default.srOnly}/>
-              {/* Render the screen content */}
-              <div className={modalStyles_1.default.modalBody}>{renderScreen()}</div>
-            </div>
-          </vaul_1.Drawer.Content>
-        </vaul_1.Drawer.Portal>
-      </vaul_1.Drawer.Root>);
-});
-exports.ModalStackRouteDrawer = ModalStackRouteDrawer;
+          <div className={modalStyles_1.default.modal} data-presentation={isSheet ? 'formSheet' : 'modal'} style={modalStyleVars}>
+            {/* Figure out how to add title and description to the modal for screen readers */}
+            <vaul_1.Drawer.Title about="" aria-describedby="" className={modalStyles_1.default.srOnly}/>
+            <vaul_1.Drawer.Description about="" className={modalStyles_1.default.srOnly}/>
+            {/* Render the screen content */}
+            <div className={modalStyles_1.default.modalBody}>{renderScreen()}</div>
+          </div>
+        </vaul_1.Drawer.Content>
+      </vaul_1.Drawer.Portal>
+    </vaul_1.Drawer.Root>);
+}
 /**
  * SSR-safe viewport detection: initial render always returns `false` so that
  * server and client markup match. The actual media query evaluation happens

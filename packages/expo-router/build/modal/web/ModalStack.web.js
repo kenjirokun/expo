@@ -10,6 +10,7 @@ const native_1 = require("@react-navigation/native");
 const native_stack_1 = require("@react-navigation/native-stack");
 const react_1 = __importDefault(require("react"));
 const ModalStackRouteDrawer_web_1 = require("./ModalStackRouteDrawer.web");
+const TransparentModalStackRouteDrawer_web_1 = require("./TransparentModalStackRouteDrawer.web");
 const utils_1 = require("./utils");
 const withLayoutContext_1 = require("../../layouts/withLayoutContext");
 function ModalStackNavigator({ initialRouteName, children, screenOptions, }) {
@@ -32,9 +33,13 @@ const ModalStackView = ({ state, navigation, descriptors, describe }) => {
       {isWeb &&
             state.routes.map((route, i) => {
                 const isModalType = (0, utils_1.isModalPresentation)(descriptors[route.key].options);
-                const isActive = i === state.index && isModalType;
-                if (!isActive)
+                const isActive = i === 0 || !isModalType;
+                if (isActive)
                     return null;
+                const isTransparentModal = (0, utils_1.isTransparentModalPresentation)(descriptors[route.key].options);
+                if (isTransparentModal) {
+                    return (<TransparentModalStackRouteDrawer_web_1.TransparentModalStackRouteDrawer key={route.key} routeKey={route.key} options={descriptors[route.key].options} renderScreen={descriptors[route.key].render} onDismiss={() => navigation.goBack()}/>);
+                }
                 return (<ModalStackRouteDrawer_web_1.ModalStackRouteDrawer key={route.key} routeKey={route.key} options={descriptors[route.key].options} renderScreen={descriptors[route.key].render} onDismiss={() => navigation.goBack()} themeColors={colors}/>);
             })}
     </div>);
