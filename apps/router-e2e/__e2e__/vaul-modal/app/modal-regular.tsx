@@ -43,6 +43,18 @@ export default function Page() {
         style={[styles.button, { backgroundColor: '#000000' }]}>
         <Text style={styles.buttonText}>Modal (transparent)</Text>
       </Pressable>
+      <Pressable
+        testID="open-modal-regular"
+        onPress={() => router.navigate('/')}
+        style={[styles.button, { backgroundColor: 'red' }]}>
+        <Text style={styles.buttonText}>Navigate, back to root</Text>
+      </Pressable>
+      <Pressable
+        testID="open-modal-regular"
+        onPress={() => router.navigate('/modal-margin')}
+        style={[styles.button, { backgroundColor: 'blue' }]}>
+        <Text style={styles.buttonText}>Navigate, to modal-margin</Text>
+      </Pressable>
     </ScrollView>
   );
 }

@@ -35,7 +35,6 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RouterModalScreen = exports.RouterModal = void 0;
-exports.convertStackStateToNonModalState = convertStackStateToNonModalState;
 const native_1 = require("@react-navigation/native");
 const native_stack_1 = require("@react-navigation/native-stack");
 const react_1 = __importStar(require("react"));
@@ -56,18 +55,21 @@ function ModalStackNavigator({ initialRouteName, children, screenOptions, }) {
 const ModalStackView = ({ state, navigation, descriptors, describe }) => {
     const isWeb = process.env.EXPO_OS === 'web';
     const { colors } = (0, native_1.useTheme)();
-    const { routes: filteredRoutes, index: nonModalIndex } = convertStackStateToNonModalState(state, descriptors, isWeb);
+    const { routes: filteredRoutes, index: nonModalIndex } = (0, utils_1.convertStackStateToNonModalState)(state, descriptors, isWeb);
     const newStackState = { ...state, routes: filteredRoutes, index: nonModalIndex };
     const dismiss = (0, react_1.useCallback)(() => {
         navigation.goBack();
     }, [navigation]);
+    const overlayRoutes = react_1.default.useMemo(() => {
+        if (!isWeb)
+            return [];
+        const idx = (0, utils_1.findLastNonModalIndex)(state, descriptors);
+        return state.routes.slice(idx + 1);
+    }, [isWeb, state, descriptors]);
     return (<div style={{ flex: 1, display: 'flex' }}>
       <native_stack_1.NativeStackView state={newStackState} navigation={navigation} descriptors={descriptors} describe={describe}/>
       {isWeb &&
-            state.routes.map((route, i) => {
-                const isModalType = (0, utils_1.isModalPresentation)(descriptors[route.key].options);
-                if (!isModalType)
-                    return null;
+            overlayRoutes.map((route) => {
                 const isTransparentModal = (0, utils_1.isTransparentModalPresentation)(descriptors[route.key].options);
                 if (isTransparentModal) {
                     return (<TransparentModalStackRouteDrawer_web_1.TransparentModalStackRouteDrawer key={route.key} routeKey={route.key} options={descriptors[route.key].options} renderScreen={descriptors[route.key].render} onDismiss={dismiss}/>);
@@ -81,27 +83,4 @@ const RouterModal = (0, withLayoutContext_1.withLayoutContext)(createModalStack(
 exports.RouterModal = RouterModal;
 const RouterModalScreen = RouterModal.Screen;
 exports.RouterModalScreen = RouterModalScreen;
-/**
- * Returns a copy of the given Stack navigation state with any modal-type routes removed
- * (only when running on the web) and a recalculated `index` that still points at the
- * currently active non-modal route. If the active route *is* a modal that gets
- * filtered out, we fall back to the last remaining route – this matches the logic
- * used inside `ModalStackView` so that the underlying `NativeStackView` never tries
- * to render a modal screen that is simultaneously being shown in the overlay.
- *
- * This helper is exported primarily for unit-testing; it should be considered
- * internal to `ModalStack.web` and not a public API.
- *
- * @internal
- */
-function convertStackStateToNonModalState(state, descriptors, isWeb) {
-    const routes = state.routes.filter((route) => {
-        const isModalType = (0, utils_1.isModalPresentation)(descriptors[route.key].options);
-        return !(isWeb && isModalType);
-    });
-    let index = routes.findIndex((r) => r.key === state.routes[state.index]?.key);
-    if (index < 0)
-        index = routes.length - 1;
-    return { routes, index };
-}
 //# sourceMappingURL=ModalStack.web.js.map
