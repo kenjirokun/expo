@@ -1,5 +1,9 @@
 import { Stack } from 'expo-router';
 
+export const unstable_settings = {
+  anchor: 'modal-regular',
+};
+
 export default function Layout() {
   return (
     <Stack>
